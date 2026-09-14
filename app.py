@@ -302,7 +302,12 @@ with tab2:
     if conc_df.empty:
         st.write("No contributor data.")
     else:
-        top_n = st.slider("Show top N contributors", 3, min(20, len(conc_df)), min(10, len(conc_df)))
+        max_available = min(20, len(conc_df))
+        if max_available <= 3:
+            # Too few contributors for a meaningful slider — just show them all
+            top_n = max_available
+        else:
+            top_n = st.slider("Show top N contributors", 3, max_available, min(10, max_available))
         fig = px.bar(conc_df.head(top_n), x="author", y="pct_of_total",
                      title="% of commits by contributor", text="commits")
         st.plotly_chart(style_fig(fig), use_container_width=True)
